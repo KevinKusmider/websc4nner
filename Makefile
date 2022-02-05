@@ -10,8 +10,10 @@ LIBS = $(shell mysql_config --libs) $(shell pkg-config --libs gtk+-3.0) $(shell 
 FILES = $(wildcard $(SRC_DIR)*.c)
 
 
-install: 
+install:
 	apt-get install mysql
+	apt-get install gtk3-dev
+	apt-get install libcurl-dev
 
 prog:
 	@gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS)

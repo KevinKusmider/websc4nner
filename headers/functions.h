@@ -1,0 +1,1 @@
+int trim(char *string);
