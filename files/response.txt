@@ -25,14 +25,14 @@
         
         
             
-            <link type="text/css" rel="stylesheet" href="themes/myges/cas.css;jsessionid=4D68568A17E86A31DC8357606E776E33"/>
+            <link type="text/css" rel="stylesheet" href="themes/myges/cas.css;jsessionid=EFC994D2D9E6476BC5E47C8A1808A4C8"/>
         
     
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="icon" href="/favicon.ico;jsessionid=4D68568A17E86A31DC8357606E776E33" type="image/x-icon"/>
+    <link rel="icon" href="/favicon.ico;jsessionid=EFC994D2D9E6476BC5E47C8A1808A4C8" type="image/x-icon"/>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/js/cas.js;jsessionid=4D68568A17E86A31DC8357606E776E33"></script>
+    <script type="text/javascript" src="/js/cas.js;jsessionid=EFC994D2D9E6476BC5E47C8A1808A4C8"></script>
 </head>
 <body id="cas" class="fl-theme-iphone">
 
@@ -53,8 +53,8 @@
         <div id="logo">
             
                 
+                    <img src="images/services/logo_myges.png"/>
                 
-                    <img src="images/services/logo_local.png"/>
                 
             
         </div>
@@ -62,8 +62,8 @@
         <div id="desc">
             
                 
+                    Connexion à MyGES, l'extranet du Réseau des Grandes Écoles Spécialisées (Réseau GES).
                 
-                    Connexion aux services du Réseau des Grandes Écoles Spécialisées (Réseau GES).
                 
             
         </div>
@@ -72,7 +72,7 @@
 </div>
 <div id="right">
     <div id="col2">
-        <form id="fm1" class="fm-v clearfix" action="/login;jsessionid=4D68568A17E86A31DC8357606E776E33" method="post">
+        <form id="fm1" class="fm-v clearfix" action="/login;jsessionid=EFC994D2D9E6476BC5E47C8A1808A4C8?service=https%3A%2F%2Fmyges.fr%2Fj_spring_cas_security_check" method="post">
             
 
             
@@ -95,7 +95,7 @@
                 <input id="password" name="password" class="required input_text" tabindex="2" accesskey="m" type="password" value="" size="25" autocomplete="off"/>
             </div>
             <div class="row btn-row">
-                <input type="hidden" name="lt" value="LT-3184606-meNjAHv9Ddkmdonm7KPlFKR7WDysO0-cas"/> <input
+                <input type="hidden" name="lt" value="LT-573782-cMVweZxBtIbKQCe7wFgLAmwECiSHHk-cas"/> <input
                     type="hidden" name="execution" value="e1s1"/> <input
                     type="hidden" name="_eventId" value="submit"/> <input
                     class="input_submit" name="submit" accesskey="l"
