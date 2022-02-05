@@ -25,14 +25,14 @@
         
         
             
-            <link type="text/css" rel="stylesheet" href="themes/myges/cas.css;jsessionid=4D68568A17E86A31DC8357606E776E33"/>
+            <link type="text/css" rel="stylesheet" href="themes/myges/cas.css;jsessionid=6AA5A3C29F2328347F00223839D29843"/>
         
     
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link rel="icon" href="/favicon.ico;jsessionid=4D68568A17E86A31DC8357606E776E33" type="image/x-icon"/>
+    <link rel="icon" href="/favicon.ico;jsessionid=6AA5A3C29F2328347F00223839D29843" type="image/x-icon"/>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/js/cas.js;jsessionid=4D68568A17E86A31DC8357606E776E33"></script>
+    <script type="text/javascript" src="/js/cas.js;jsessionid=6AA5A3C29F2328347F00223839D29843"></script>
 </head>
 <body id="cas" class="fl-theme-iphone">
 
@@ -72,7 +72,7 @@
 </div>
 <div id="right">
     <div id="col2">
-        <form id="fm1" class="fm-v clearfix" action="/login;jsessionid=4D68568A17E86A31DC8357606E776E33" method="post">
+        <form id="fm1" class="fm-v clearfix" action="/login;jsessionid=6AA5A3C29F2328347F00223839D29843" method="post">
             
 
             
@@ -95,7 +95,7 @@
                 <input id="password" name="password" class="required input_text" tabindex="2" accesskey="m" type="password" value="" size="25" autocomplete="off"/>
             </div>
             <div class="row btn-row">
-                <input type="hidden" name="lt" value="LT-3184606-meNjAHv9Ddkmdonm7KPlFKR7WDysO0-cas"/> <input
+                <input type="hidden" name="lt" value="LT-1130132-vQAjAf53fQEahboWBOU27MtkN4atdQ-cas"/> <input
                     type="hidden" name="execution" value="e1s1"/> <input
                     type="hidden" name="_eventId" value="submit"/> <input
                     class="input_submit" name="submit" accesskey="l"
