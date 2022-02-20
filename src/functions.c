@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+//Function that remove spaces
 int trim(char *string) {
         int i = 0, j=0, length = 0;
 
@@ -20,3 +21,5 @@ int trim(char *string) {
 
         return 1;
 }
+
+

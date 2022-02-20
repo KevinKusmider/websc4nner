@@ -3,6 +3,7 @@
 #include <mysql.h>
 #include <string.h>
 
+//Function that return error when we cant connect to mysql
 int displayError(const char *error, MYSQL *mysql) {
         if(strlen(error) != 0) fprintf(stderr, "\n%s\n", error);
         else fprintf(stderr, "\nUne erreur s'est produite\n");
@@ -11,7 +12,7 @@ int displayError(const char *error, MYSQL *mysql) {
 
         return 1;
 }
-
+//Function that let us connect to database
 int bddConnect(MYSQL *mysql) {
         if( mysql == NULL ) return 1;
 
@@ -26,6 +27,7 @@ int bddConnect(MYSQL *mysql) {
         }
 }
 
+//Function that display all results in the database table
 void displaySqlResult(MYSQL_RES *result) {
         MYSQL_ROW row;
         unsigned int i = 1;

@@ -15,7 +15,7 @@ int analyse(char *fileName);
 int displayError(const char *error, MYSQL *mysql);
 int bddConnect(MYSQL *mysql);
 
-
+//Function to verifie the input for menu
 int checkResponse(int value, int min, int max) {
 	if(value >= min && value <= max) {
 		return 1;
@@ -25,13 +25,14 @@ int checkResponse(int value, int min, int max) {
 	return 0;
 }
 
+//Function to display the question
 void showQuestion(char * question) {
 	printf("=====================================================================\n");
 	printf("  %s\n", question);
 	printf("=====================================================================\n\n");
 }
 
-
+//Function to display the menu + verifie input with a do while loop
 int showMenu() {
 	int option, response;
 	showQuestion("Menu");
@@ -46,7 +47,7 @@ int showMenu() {
 	return option;
 }
 
-
+//Function that capture the URL + send it to Curl via sendCurl() function
 void xss() {
 	char url[255];
 	printf("url ? ");

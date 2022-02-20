@@ -11,6 +11,7 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     return written;
 }
 
+//Function that take a url in parameter & send a HTTP POST then return the html written in a .txt file to analyse it
 int sendCurl(char *url) {
 	CURL *curl;
 	CURLcode res;
@@ -47,6 +48,7 @@ int sendCurl(char *url) {
 	analyse("files/response.txt");
 }
 
+//Function that analyse the .txt file (the html returned code) and search for <input> via  regex
 int analyse(char *fileName) {
         FILE *file;
         char *line = NULL;
@@ -77,3 +79,21 @@ int analyse(char *fileName) {
 
         return 1;
 }
+
+/*int FindError (char *filename){
+	FILE *file
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t read;
+	regex_t regex;
+	int reti;
+
+	file = fopen(fileName, "r+b");
+	if(file == NULL) exit(EXIT_FAILURE);
+
+	while ((read = getline(&line, &len, file)) != -1){
+		reti = regcomp(&regex, "ERROR", 0);
+		if(!reti) {
+
+		if
+*/
