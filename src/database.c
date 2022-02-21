@@ -3,6 +3,7 @@
 #include <mysql.h>
 #include <string.h>
 
+
 //Function that return error when we cant connect to mysql
 int displayError(const char *error, MYSQL *mysql) {
         if(strlen(error) != 0) fprintf(stderr, "\n%s\n", error);
@@ -50,4 +51,18 @@ void displaySqlResult(MYSQL_RES *result) {
                 }
                 printf("\n");
         }
+}
+
+void historyResult(){
+	MYSQL *mysql = mysql_init(NULL);
+        MYSQL_RES *result = NULL;
+        bddConnect(mysql);
+	// Select & Display every elements
+        mysql_query(mysql, "SELECT * FROM History"); // Make query
+        result = mysql_use_result(mysql); // Store results
+        displaySqlResult(result); // Display result
+        // Libération du jeu de resultat
+        mysql_free_result(result);
+        // Fermeture de mysql
+        mysql_close(mysql);
 }

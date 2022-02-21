@@ -1,1 +1,1 @@
-void sendCurl(char *url);
+void sendCurl(char *url, char *inputCommand);

@@ -50,10 +50,13 @@ int showMenu() {
 //Function that capture the URL + send it to Curl via sendCurl() function
 void xss() {
 	char url[255];
+	char inputCommand[255];
 	printf("url ? ");
 	scanf("%s", url);
+	printf("\n Command ? : ");
+        scanf("%s", inputCommand);
 
-	sendCurl(url);
+	sendCurl(url, inputCommand);
 }
 
 int main (int argc, char **argv) {
@@ -90,6 +93,8 @@ int main (int argc, char **argv) {
 					case 2:
 						xss();
 						break;
+					case 5:
+						historyResult();
 					case 6:
 						exit(EXIT_SUCCESS);
 						break;
