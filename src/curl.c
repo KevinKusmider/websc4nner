@@ -55,6 +55,44 @@ int sendCurl(char *url, char *inputCommand) {
 	analyse("files/response.txt");
 }
 
+int sendCurl2(char *url) {
+	CURL *curl;
+	CURLcode res;
+	FILE *fp;
+	//char default="https://mon-adresse-ip.fr/trouver-une-adresse-ip/"
+	char inputName[255] ="url=";
+	strcat(inputName,url);
+	printf("\n%s\n", inputName);
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	curl = curl_easy_init();
+	if(curl) {
+		fp = fopen("files/response.txt","wb");
+		curl_easy_setopt(curl, CURLOPT_URL, "https://mon-adresse-ip.fr/trouver-une-adresse-ip/");
+		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, inputName);
+		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
+		curl_easy_setopt(curl, CURLOPT_POST, 1L);
+		/*  Now specify the POST data */
+
+		/* Perform the request, res will get the return code */
+		res = curl_easy_perform(curl);
+		/* Check for errors */
+		if(res != CURLE_OK) {
+			fprintf(stderr, "curl_easy_perform() failed: %s\n",
+			curl_easy_strerror(res));
+		}
+
+		/* always cleanup */
+		fclose(fp);
+		curl_easy_cleanup(curl);
+	}
+
+	curl_global_cleanup();
+	analyse("files/response.txt");
+}
+
 //Function that analyse the .txt file (the html returned code) and search for <input> via  regex
 int analyse(char *fileName) {
         FILE *file;
@@ -108,7 +146,7 @@ int analyse(char *fileName) {
 
 void SaveData (char *url, char *inputCommand){
 	MYSQL *mysql = mysql_init(NULL);
-        MYSQL_RES *result = NULL;
+    MYSQL_RES *result = NULL;
 	bddConnect(mysql);
 	char sql_cmd[1000];
 	char * addRequest= "INSERT INTO History (url, command) VALUES('";

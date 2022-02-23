@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <mysql.h>
+#include <mysql/mysql.h>
 #include <gtk/gtk.h>
 #include <curl/curl.h>
 #include <string.h>
@@ -14,6 +14,8 @@
 int analyse(char *fileName);
 int displayError(const char *error, MYSQL *mysql);
 int bddConnect(MYSQL *mysql);
+void addUrl();
+void showUrl();
 
 //Function to verifie the input for menu
 int checkResponse(int value, int min, int max) {
@@ -54,9 +56,65 @@ void xss() {
 	printf("url ? ");
 	scanf("%s", url);
 	printf("\n Command ? : ");
-        scanf("%s", inputCommand);
+    scanf("%s", inputCommand);
 
 	sendCurl(url, inputCommand);
+}
+void xss2() {
+	char url[255];
+	printf("url ? ");
+	scanf("%s", url);
+	sendCurl2(url);
+}
+
+void addUrl() {
+	MYSQL *mysql = mysql_init(NULL);
+    MYSQL_RES *result = NULL;
+	bddConnect(mysql);
+	char url[255];
+	char inputCommand[255];
+	char sql_cmd[1000];
+	printf("url ? ");
+	scanf("%s", url);
+	char * addRequest= "INSERT INTO Websites (url) VALUES('";
+	char finish[6]="')";
+	sprintf(sql_cmd,"%s%s%s", addRequest, url, finish );
+	if(mysql_query(mysql, sql_cmd) !=0){
+		fprintf(stderr, "Query Failure\n");
+	   }
+
+
+}
+
+void showUrl(){
+	MYSQL *mysql = mysql_init(NULL);
+    MYSQL_RES *result = NULL;
+    bddConnect(mysql);
+	// Select & Display every elements
+    mysql_query(mysql, "SELECT * FROM Websites"); // Make query
+    result = mysql_use_result(mysql); // Store results
+    displaySqlResult(result); // Display result
+    // Libération du jeu de resultat
+    mysql_free_result(result);
+    // Fermeture de mysql
+    mysql_close(mysql);
+
+}
+
+void deleteUrl(){
+	MYSQL *mysql = mysql_init(NULL);
+    MYSQL_RES *result = NULL;
+    bddConnect(mysql);
+	int id;
+	char sql_cmd[1000];
+	char * addRequest= "DELETE FROM Websites WHERE id=";
+	printf("Which URL you like to delete (select the id) : ");
+	scanf("%d", &id);
+	sprintf(sql_cmd,"%s%d", addRequest, id );
+	if(mysql_query(mysql, sql_cmd) !=0){
+		fprintf(stderr, "Query Failure\n");
+	   }
+	
 }
 
 int main (int argc, char **argv) {
@@ -89,10 +147,15 @@ int main (int argc, char **argv) {
 			while(1) {
 				switch (showMenu()) {
 					case 1:
+						addUrl();
+						showUrl();
+						deleteUrl();
 						break;
 					case 2:
 						xss();
 						break;
+					case 3:
+						xss2();
 					case 5:
 						historyResult();
 					case 6:
