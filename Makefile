@@ -17,7 +17,7 @@ install:
 
 prog:
 	@gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS)
-	./main
+	@./main
 
 newprog:
 	gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS)
