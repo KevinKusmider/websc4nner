@@ -6,6 +6,9 @@ SRC_EXT = .c
 CFLAGS = $(shell mysql_config --cflags) $(shell pkg-config --cflags gtk+-3.0) $(shell curl-config --cflags) -I./headers
 LIBS = $(shell mysql_config --libs) $(shell pkg-config --libs gtk+-3.0) $(shell curl-config --libs)
 
+DB_USER = webscanner_user
+DB_PASSWORD = Secure11
+DB_NAME = webscanner
 
 FILES = $(wildcard $(SRC_DIR)*.c)
 
@@ -17,8 +20,17 @@ install:
 
 prog:
 	@gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS)
-	./main
+	@./main
 
 newprog:
 	gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS)
 	konsole --hold -e "./main"
+
+
+deldb:
+	$(shell mysql -uroot -psecure11 -e "DROP USER '$(DB_USER)'@'localhost';")
+
+db:
+	$(shell mysql -uroot -psecure11 -e "CREATE DATABASE $(DB_NAME);")
+	$(shell mysql -uroot -psecure11 -e "CREATE USER '$(DB_USER)'@'localhost' IDENTIFIED BY '$(DB_PASSWORD)'; GRANT ALL PRIVILEGES ON $(DB_NAME).* TO '$(DB_USER)'@'localhost';")
+	$(shell mysql -u$(DB_USER) -p$(DB_PASSWORD) webscanner < database/reset/tables.sql)

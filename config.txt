@@ -1,0 +1,5 @@
+debug true
+db_host localhost
+db_user kusmider
+db_password Secure11
+db_name test
