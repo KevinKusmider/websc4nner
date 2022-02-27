@@ -11,6 +11,7 @@
 // Own libraries
 #include <global.h>
 #include <functions.h>
+#include <curl.h>
 
 extern GLOBAL global;
 
@@ -75,7 +76,7 @@ int send_curl(char *url, char * postfield) {
 	return 1;
 }
 
-int sendCurl2(char *url) {
+void sendCurl2(char *url) {
 	CURL *curl;
 	CURLcode res;
 	FILE *fp;

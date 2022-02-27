@@ -48,7 +48,7 @@ void displaySqlResult(MYSQL_RES *result) {
         unsigned int num_champs = 0;
 
         num_champs = mysql_num_fields(result);
-        printf("Il y a : %d champ(s) dans la requête SQL\n", num_champs);
+        printf("\nIl y a : %d champ(s) dans la requête SQL\n", num_champs);
 
         while((row = mysql_fetch_row(result))) {
                 //On déclare un pointeur long non signé pour y stocker la taille des valeurs
@@ -66,13 +66,22 @@ void displaySqlResult(MYSQL_RES *result) {
         }
 }
 
-void historyResult(){
+int historyResult() {
 	// Select & Display every elements
-        mysql_query(global.mysql, "SELECT * FROM History"); // Make query
+        if(mysql_query(global.mysql, "SELECT * FROM targets") != 0) {
+                if(config_check("debug", "true"))
+                        fprintf(stderr, "\nRequête impossible à executer\n");
+                return 0;
+        }
+        if(global.result != NULL)
+                mysql_free_result(global.result);
+
         global.result = mysql_use_result(global.mysql); // Store results
         displaySqlResult(global.result); // Display result
         // Libération du jeu de resultat
         mysql_free_result(global.result);
+
+        return 1;
 }
 
 /*

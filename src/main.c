@@ -49,7 +49,8 @@ int main (int argc, char **argv) {
 					xss2();
 				case 5:
 					historyResult();
-				case 6:
+					break;
+				case 0:
 					// APPELLER FUNC FREE GLOBAL
 					exit(EXIT_SUCCESS);
 					break;

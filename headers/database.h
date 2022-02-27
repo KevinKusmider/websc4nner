@@ -5,5 +5,6 @@
     int mysql_check_error();
     int database_connect(MYSQL *mysql);
     void displaySqlResult(MYSQL_RES *result);
+    int historyResult();
 
 #endif
