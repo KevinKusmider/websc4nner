@@ -1,11 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <string.h>
 #include <time.h>
 #include <unistd.h>
 
-#include <mysql.h>
+#include <mysql/mysql.h>
 #include <gtk/gtk.h>
 #include <curl/curl.h>
 
@@ -20,6 +19,7 @@
 
 extern GLOBAL global;
 
+
 int main (int argc, char **argv) {
 	int response, option, program;
 
@@ -28,10 +28,10 @@ int main (int argc, char **argv) {
 	printf("\n\ndP   dP   dP          dP       .d88888b           dP   dP\n88   88   88          88       88.    '          88   88\n88  .8P  .8P .d8888b. 88d888b. `Y88888b. .d8888b. 88aaa88 88d888b. 88d888b. .d8888b. 88d888b.\n88  d8'  d8' 88ooood8 88'  `88       `8b 88'  `      88 88'  `88 88'  `88 88ooood8 88'  `88\n88.d8P8.d8P  88.  ... 88.  .88 d8'   .8P 88.  ...      88 88    88 88    88 88.  ... 88\n8888' Y88'   `88888P' 88Y8888'  Y88888P  `88888P'      dP dP    dP dP    dP `88888P' dP\noooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo\n");
 
 	show_question("What would you like to do ?");
-	printf("\n 1. Console mode\n 2. Interface mode\n 3. Stop program\n");
-	option = askForInt("\n===================#?:", 1, 3);
+	printf("\n 1. Console mode\n 2. Interface mode\n 0. Stop program\n");
+	option = askForInt("\n===================#?:", 0, 2);
 
-	if(option == 3) { 
+	if(option == 0) { 
 		// DONT FORGET TO CLEAN
 		exit(EXIT_SUCCESS); 
 	}
@@ -45,6 +45,10 @@ int main (int argc, char **argv) {
 				case 2:
 					injection_sql();
 					break;
+				case 3:
+					xss2();
+				case 5:
+					historyResult();
 				case 6:
 					// APPELLER FUNC FREE GLOBAL
 					exit(EXIT_SUCCESS);
@@ -77,9 +81,9 @@ void show_question(char * question) {
 int show_menu() {
 	int option;
 	show_question("Menu");
-	printf("\n 1. Websistes\n 2. Injection SQL\n 3. Faille XSS\n 4. Test general\n 5. Historique\n 6. Stop program\n");
+	printf("\n 1. Websistes\n 2. Injection SQL\n 3. Faille XSS\n 4. Test general\n 5. Historique\n 0. Stop program\n");
 
-	option = askForInt("\n===================#?:", 1, 6);
+	option = askForInt("\n===================#?:", 0, 5);
 
 	return option;
 }
@@ -131,6 +135,41 @@ void websites() {
 	}
 }
 
+void addUrl() {
+	char url[255];
+	char inputCommand[255];
+	char sql_cmd[1000];
+	printf("url ? ");
+	scanf("%s", url);
+	char * addRequest= "INSERT INTO Websites (url) VALUES('";
+	char finish[6]="')";
+	sprintf(sql_cmd,"%s%s%s", addRequest, url, finish );
+	if(mysql_query(global.mysql, sql_cmd) !=0){
+		fprintf(stderr, "Query Failure\n");
+	   }
+}
+
+void showUrl() {
+	// Select & Display every elements
+    mysql_query(global.mysql, "SELECT * FROM Websites"); // Make query
+    global.result = mysql_use_result(global.mysql); // Store results
+    displaySqlResult(global.result); // Display result
+    // Libération du jeu de resultat
+    mysql_free_result(global.result);
+}
+
+void deleteUrl() {
+	int id;
+	char sql_cmd[1000];
+	char * addRequest= "DELETE FROM Websites WHERE id=";
+	printf("Which URL you like to delete (select the id) : ");
+	scanf("%d", &id);
+	sprintf(sql_cmd,"%s%d", addRequest, id );
+	if(mysql_query(global.mysql, sql_cmd) !=0){
+		fprintf(stderr, "Query Failure\n");
+	   }
+	
+}
 
 void injection_sql() {
 	int option;
@@ -221,5 +260,13 @@ void injection_sql() {
 		case 2:
 			break;
 	}
+}
+
+//Function that capture the URL + send it to Curl via sendCurl() function
+void xss2() {
+	char url[255];
+	printf("url ? ");
+	scanf("%s", url);
+	sendCurl2(url);
 }
 

@@ -41,6 +41,7 @@ int database_connect(MYSQL *mysql) {
         }
 }
 
+//Function that display all results in the database table
 void displaySqlResult(MYSQL_RES *result) {
         MYSQL_ROW row;
         unsigned int i = 1;
@@ -65,17 +66,25 @@ void displaySqlResult(MYSQL_RES *result) {
         }
 }
 
+void historyResult(){
+	// Select & Display every elements
+        mysql_query(global.mysql, "SELECT * FROM History"); // Make query
+        global.result = mysql_use_result(global.mysql); // Store results
+        displaySqlResult(global.result); // Display result
+        // Libération du jeu de resultat
+        mysql_free_result(global.result);
+}
 
 /*
 
-			// Select & Display every elements
-			mysql_query(mysql, "SELECT * FROM users"); // Make query
-			result = mysql_use_result(mysql); // Store results
-			// displaySqlResult(result); // Display results
+        // Select & Display every elements
+        mysql_query(mysql, "SELECT * FROM users"); // Make query
+        result = mysql_use_result(mysql); // Store results
+        // displaySqlResult(result); // Display results
 
-			// Libération du jeu de resultat
-			mysql_free_result(result);
-			// Fermeture de mysql
-			mysql_close(mysql);
+        // Libération du jeu de resultat
+        mysql_free_result(result);
+        // Fermeture de mysql
+        mysql_close(mysql);
 
 */
