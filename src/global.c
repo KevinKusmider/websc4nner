@@ -37,13 +37,7 @@ int init_global() {
  */
 int init_config() {
     FILE *config;
-    char fKey[55], *fValue;
-    fValue = malloc(55 * sizeof(char));
-    
-    if(fValue == NULL) {
-        fprintf(stderr, "\nImpossible de d'allouer la mémoire dans la fonction config\n");
-        return 0;
-    }    
+    char fKey[55], fValue[55];
 
     if((config = fopen("config.txt", "r")) == NULL) {
         fprintf(stderr, "\nImpossible de lire le fichier de configuraiton.\n");
