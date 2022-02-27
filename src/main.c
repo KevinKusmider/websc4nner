@@ -1,180 +1,61 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
+#include <unistd.h>
+
 #include <mysql/mysql.h>
 #include <gtk/gtk.h>
 #include <curl/curl.h>
-#include <string.h>
-#include <regex.h>
+
 #include <database.h>
 #include <interface.h>
 #include <functions.h>
 #include <curl.h>
+#include <global.h>
+#include <main.h>
 
-int analyse(char *fileName);
-int displayError(const char *error, MYSQL *mysql);
-int bddConnect(MYSQL *mysql);
-void addUrl();
-void showUrl();
+#define CHAR_LENGTH 255
 
-//Function to verifie the input for menu
-int checkResponse(int value, int min, int max) {
-	if(value >= min && value <= max) {
-		return 1;
-	}
+extern GLOBAL global;
 
-	printf("Choice not found motherfucker\n");
-	return 0;
-}
-
-//Function to display the question
-void showQuestion(char * question) {
-	printf("=====================================================================\n");
-	printf("  %s\n", question);
-	printf("=====================================================================\n\n");
-}
-
-//Function to display the menu + verifie input with a do while loop
-int showMenu() {
-	int option, response;
-	showQuestion("Menu");
-	printf(" 1. Websistes\n 2. Injection SQL\n 3. Attaque DOS\n 4. Test general\n 5. Historique\n 6. Stop program\n\n");
-
-	do {
-		printf("===================#?:");
-        	scanf("%d", &option);
-		response = checkResponse(option , 1, 6);
-	} while(!response);
-
-	return option;
-}
-
-//Function that capture the URL + send it to Curl via sendCurl() function
-void xss() {
-	char url[255];
-	char inputCommand[255];
-	printf("url ? ");
-	scanf("%s", url);
-	printf("\n Command ? : ");
-    scanf("%s", inputCommand);
-
-	sendCurl(url, inputCommand);
-}
-void xss2() {
-	char url[255];
-	printf("url ? ");
-	scanf("%s", url);
-	sendCurl2(url);
-}
-
-void addUrl() {
-	MYSQL *mysql = mysql_init(NULL);
-    MYSQL_RES *result = NULL;
-	bddConnect(mysql);
-	char url[255];
-	char inputCommand[255];
-	char sql_cmd[1000];
-	printf("url ? ");
-	scanf("%s", url);
-	char * addRequest= "INSERT INTO Websites (url) VALUES('";
-	char finish[6]="')";
-	sprintf(sql_cmd,"%s%s%s", addRequest, url, finish );
-	if(mysql_query(mysql, sql_cmd) !=0){
-		fprintf(stderr, "Query Failure\n");
-	   }
-
-
-}
-
-void showUrl(){
-	MYSQL *mysql = mysql_init(NULL);
-    MYSQL_RES *result = NULL;
-    bddConnect(mysql);
-	// Select & Display every elements
-    mysql_query(mysql, "SELECT * FROM Websites"); // Make query
-    result = mysql_use_result(mysql); // Store results
-    displaySqlResult(result); // Display result
-    // Libération du jeu de resultat
-    mysql_free_result(result);
-    // Fermeture de mysql
-    mysql_close(mysql);
-
-}
-
-void deleteUrl(){
-	MYSQL *mysql = mysql_init(NULL);
-    MYSQL_RES *result = NULL;
-    bddConnect(mysql);
-	int id;
-	char sql_cmd[1000];
-	char * addRequest= "DELETE FROM Websites WHERE id=";
-	printf("Which URL you like to delete (select the id) : ");
-	scanf("%d", &id);
-	sprintf(sql_cmd,"%s%d", addRequest, id );
-	if(mysql_query(mysql, sql_cmd) !=0){
-		fprintf(stderr, "Query Failure\n");
-	   }
-	
-}
 
 int main (int argc, char **argv) {
-
 	int response, option, program;
 
-	printf("dP   dP   dP          dP       .d88888b           dP   dP\n88   88   88          88       88.    '          88   88\n88  .8P  .8P .d8888b. 88d888b. `Y88888b. .d8888b. 88aaa88 88d888b. 88d888b. .d8888b. 88d888b.\n88  d8'  d8' 88ooood8 88'  `88       `8b 88'  `      88 88'  `88 88'  `88 88ooood8 88'  `88\n88.d8P8.d8P  88.  ... 88.  .88 d8'   .8P 88.  ...      88 88    88 88    88 88.  ... 88\n8888' Y88'   `88888P' 88Y8888'  Y88888P  `88888P'      dP dP    dP dP    dP `88888P' dP\noooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo\n\n");
+	init_global();
 
+	printf("\n\ndP   dP   dP          dP       .d88888b           dP   dP\n88   88   88          88       88.    '          88   88\n88  .8P  .8P .d8888b. 88d888b. `Y88888b. .d8888b. 88aaa88 88d888b. 88d888b. .d8888b. 88d888b.\n88  d8'  d8' 88ooood8 88'  `88       `8b 88'  `      88 88'  `88 88'  `88 88ooood8 88'  `88\n88.d8P8.d8P  88.  ... 88.  .88 d8'   .8P 88.  ...      88 88    88 88    88 88.  ... 88\n8888' Y88'   `88888P' 88Y8888'  Y88888P  `88888P'      dP dP    dP dP    dP `88888P' dP\noooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo\n");
 
-	showQuestion("What would you like to do ?");
-	printf(" 1. Console mode\n 2. Interface mode\n 3. Stop program\n\n");
+	show_question("What would you like to do ?");
+	printf("\n 1. Console mode\n 2. Interface mode\n 0. Stop program\n");
+	option = askForInt("\n===================#?:", 0, 2);
 
-	do {
-		printf("===================#?:");
-        	scanf("%d", &option);
-		response = checkResponse(option , 1, 3);
-	} while(!response);
-
-	if(option == 3) { exit(EXIT_SUCCESS); }
-
-        MYSQL *mysql = mysql_init(NULL);
-        MYSQL_RES *result = NULL;
-
-	// Connect to db -> if failed display error
-	if(!bddConnect(mysql)) { return displayError(mysql_error(mysql), mysql); }
+	if(option == 0) { 
+		// DONT FORGET TO CLEAN
+		exit(EXIT_SUCCESS); 
+	}
 
 	if(option == 1) {
-
-		if(1) {
-			while(1) {
-				switch (showMenu()) {
-					case 1:
-						addUrl();
-						showUrl();
-						deleteUrl();
-						break;
-					case 2:
-						xss();
-						break;
-					case 3:
-						xss2();
-					case 5:
-						historyResult();
-					case 6:
-						exit(EXIT_SUCCESS);
-						break;
-					default:
-						printf("Show menu answer not found");
-				}
+		while(1) {
+			switch (show_menu()) {
+				case 1:
+					websites();
+					break;
+				case 2:
+					injection_sql();
+					break;
+				case 3:
+					xss2();
+				case 5:
+					historyResult();
+				case 6:
+					// APPELLER FUNC FREE GLOBAL
+					exit(EXIT_SUCCESS);
+					break;
+				default:
+					printf("Show menu answer not found");
 			}
-		} else {
-			// Select & Display every elements
-			mysql_query(mysql, "SELECT * FROM users"); // Make query
-			result = mysql_use_result(mysql); // Store results
-			// displaySqlResult(result); // Display results
-
-			// Libération du jeu de resultat
-			mysql_free_result(result);
-			// Fermeture de mysql
-			mysql_close(mysql);
 		}
 	}
 
@@ -189,5 +70,203 @@ int main (int argc, char **argv) {
 	}
 
 	return EXIT_SUCCESS;
+}
+
+void show_question(char * question) {
+	printf("\n=====================================================================\n");
+	printf("  %s\n", question);
+	printf("=====================================================================\n");
+}
+
+int show_menu() {
+	int option;
+	show_question("Menu");
+	printf("\n 1. Websistes\n 2. Injection SQL\n 3. Faille XSS\n 4. Test general\n 5. Historique\n 0. Stop program\n");
+
+	option = askForInt("\n===================#?:", 0, 5);
+
+	return option;
+}
+
+
+void show_websites() {
+	MYSQL_FIELD *fields;
+	MYSQL_ROW row;
+	size_t i = 0;
+	size_t num_champs = 0;
+	int flengths[6] = {3,20,55,20,15,15};
+
+	mysql_query(global.mysql, "SELECT * FROM targets");
+	global.result = mysql_store_result(global.mysql);
+	
+	num_champs = mysql_num_fields(global.result);
+	fields = mysql_fetch_fields(global.result);
+
+	// Afficher les titres des colonnes
+	printf("\n");
+	for(i=0 ; i<num_champs ; i++) {
+		printf("| %-*s ", flengths[i], fields[i].name);
+	}
+	printf("\n");
+
+	// Afficher les valeurs des colonnes
+	while((row = mysql_fetch_row(global.result))) {
+		size_t *lengths; // Array qui contiendra la taille de chaque fields
+		lengths = mysql_fetch_lengths(global.result);
+
+		for(i = 0; i < num_champs; i++) {
+				printf("| %-*s ", flengths[i], row[i] ? row[i] : "NULL");
+		}
+		printf("\n");
+	}
+	mysql_free_result(global.result);
+}
+
+void websites() {
+	while(1) {
+		show_question("Menu > Websites");
+		show_websites();
+		printf("\n 1. Ajouter\n 2. Supprimer\n 3. Sélectionner\n 0. Retour\n");
+
+		switch (askForInt("\n===================#?:", 0, 3)) {
+			case 0:
+				return;
+		}
+	}
+}
+
+void addUrl() {
+	char url[255];
+	char inputCommand[255];
+	char sql_cmd[1000];
+	printf("url ? ");
+	scanf("%s", url);
+	char * addRequest= "INSERT INTO Websites (url) VALUES('";
+	char finish[6]="')";
+	sprintf(sql_cmd,"%s%s%s", addRequest, url, finish );
+	if(mysql_query(global.mysql, sql_cmd) !=0){
+		fprintf(stderr, "Query Failure\n");
+	   }
+}
+
+void showUrl() {
+	// Select & Display every elements
+    mysql_query(global.mysql, "SELECT * FROM Websites"); // Make query
+    global.result = mysql_use_result(global.mysql); // Store results
+    displaySqlResult(global.result); // Display result
+    // Libération du jeu de resultat
+    mysql_free_result(global.result);
+}
+
+void deleteUrl() {
+	int id;
+	char sql_cmd[1000];
+	char * addRequest= "DELETE FROM Websites WHERE id=";
+	printf("Which URL you like to delete (select the id) : ");
+	scanf("%d", &id);
+	sprintf(sql_cmd,"%s%d", addRequest, id );
+	if(mysql_query(global.mysql, sql_cmd) !=0){
+		fprintf(stderr, "Query Failure\n");
+	   }
+	
+}
+
+void injection_sql() {
+	int option;
+	char url[CHAR_LENGTH];
+
+	show_question("Menu > Injection SQL");
+	printf("\n 1. Automatique\n 2. Manuelle\n 0. Retour\n");
+
+	switch(askForInt("\n===================#?:", 0, 2)) {
+		case 0:
+			return;
+		
+		case 1:
+			printf("url ? ");
+			scanf("%s", url);
+
+			send_curl(url, NULL);
+
+			CHAR_ITEM *inputs = NULL;
+			search_lines_in_file("files/response.txt", "<input", &inputs);
+
+			if(inputs != NULL) {
+				show_question("FOUND INPUTS");
+				list_show_char_item(inputs);
+			} else {
+				show_question("NO INPUTS FOUND");
+				return ;
+			}
+
+			CHAR_ITEM *names = NULL;
+			CHAR_ITEM *input = inputs;
+
+			while(input != NULL) {
+				char *name = NULL;
+				char *type = NULL;
+				
+				if(get_attr_from_line("name=", &name, input->value)) {
+					if(get_attr_from_line("type=", &type, input->value)) {
+						list_add_char_item(&names, type, name);
+					} else {
+						list_add_char_item(&names, "", name);
+					}
+				}
+				
+				if(name != NULL) free(name);
+				if(type != NULL) free(type);
+				input = input->next;
+			}
+
+			CHAR_ITEM *name = names;
+			char postfields[255] = "";
+
+			printf("\n");
+			show_question("Remplir les inputs");
+			while (name != NULL)
+			{
+				if(strcmp(name->key, "hidden")) {
+					char valeur[255];
+					printf("Valeur pour l'input de type : %s et name : %s ? ", name->key, name->value);
+					strcat(postfields, name->value);
+					strcat(postfields, "=");
+					scanf("%s", valeur);
+					strcat(postfields, valeur);
+				} else {
+					/*
+					strcat(postfields, name->);
+					strcat(postfields, "=");
+					strcat(postfields, name->value);
+					*/
+				}
+
+
+				if((name = name->next) != NULL && strcmp(name->key, "hidden")) {
+					strcat(postfields, "&");
+				}
+			}
+
+			printf("\n\npostfiles %s\n\n", postfields);
+
+			send_curl(url, postfields);
+
+			list_show_char_item(names);
+
+			list_clean_char_item(names);
+			list_clean_char_item(inputs);
+			break;
+
+		case 2:
+			break;
+	}
+}
+
+//Function that capture the URL + send it to Curl via sendCurl() function
+void xss2() {
+	char url[255];
+	printf("url ? ");
+	scanf("%s", url);
+	sendCurl2(url);
 }
 

@@ -1,29 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <mysql.h>
 #include <string.h>
 
+#include <mysql/mysql.h>
 
-//Function that return error when we cant connect to mysql
-int displayError(const char *error, MYSQL *mysql) {
-        if(strlen(error) != 0) fprintf(stderr, "\n%s\n", error);
-        else fprintf(stderr, "\nUne erreur s'est produite\n");
+#include <global.h>
+#include <functions.h>
 
-        if(mysql != NULL) mysql_close(mysql);
+extern GLOBAL global;
 
-        return 1;
+int mysql_check_error() {
+        if(global.mysql == NULL) {
+                if(config_check("debug", "true")) {
+                        fprintf(stderr, "\nImpossible de vérifier mysql error car mysql non initialisé\n");
+                        return 1;
+                }
+        }
+
+        if(strlen(mysql_error(global.mysql)) != 0) {
+                fprintf(stderr, "\n%s\n", mysql_error(global.mysql));
+                return 1;
+        }
+
+        return 0;
 }
-//Function that let us connect to database
-int bddConnect(MYSQL *mysql) {
-        if( mysql == NULL ) return 1;
+
+int database_connect(MYSQL *mysql) {
+        if( mysql == NULL ) return 0;
 
         mysql_options(mysql, MYSQL_READ_DEFAULT_GROUP, "option");
 
-        if (!mysql_real_connect(mysql, "localhost", "kusmider", "Secure11", "test", 0, NULL, 0)) {
-                printf("Impossible de se conneccter à la bdd\n");
+        if (!mysql_real_connect(mysql, config("db_host"), config("db_user"), config("db_password"), config("db_name"), 0, NULL, 0)) {
+                if(config_check("debug", "true"))
+                        fprintf(stderr, "\nImpossible de se conneccter à la bdd\n");
                 return 0;
         } else {
-                printf("Connexion à la bdd réussi\n");
+                if(config_check("debug", "true"))
+                        fprintf(stdout, "\nConnexion à la bdd réussi\n");
                 return 1;
         }
 }
@@ -54,15 +67,24 @@ void displaySqlResult(MYSQL_RES *result) {
 }
 
 void historyResult(){
-	MYSQL *mysql = mysql_init(NULL);
-        MYSQL_RES *result = NULL;
-        bddConnect(mysql);
 	// Select & Display every elements
-        mysql_query(mysql, "SELECT * FROM History"); // Make query
+        mysql_query(global.mysql, "SELECT * FROM History"); // Make query
+        global.result = mysql_use_result(global.mysql); // Store results
+        displaySqlResult(global.result); // Display result
+        // Libération du jeu de resultat
+        mysql_free_result(global.result);
+}
+
+/*
+
+        // Select & Display every elements
+        mysql_query(mysql, "SELECT * FROM users"); // Make query
         result = mysql_use_result(mysql); // Store results
-        displaySqlResult(result); // Display result
+        // displaySqlResult(result); // Display results
+
         // Libération du jeu de resultat
         mysql_free_result(result);
         // Fermeture de mysql
         mysql_close(mysql);
-}
+
+*/
