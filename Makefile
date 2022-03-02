@@ -19,7 +19,7 @@ install:
 	apt-get install libcurl-dev
 
 prog:
-	@gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS)
+	@gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS) -rdynamic
 	@./main
 
 newprog:

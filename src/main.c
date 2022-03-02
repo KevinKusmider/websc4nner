@@ -61,13 +61,7 @@ int main (int argc, char **argv) {
 	}
 
 	if(option == 2) {
-		GtkApplication *app;
-		int status;
-
-		app = gtk_application_new ("org.gtk.webscanner", G_APPLICATION_FLAGS_NONE);
-  		g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
-	  	status = g_application_run (G_APPLICATION (app), argc, argv);
-  		g_object_unref (app);
+		interface_init(&argc, &argv);
 	}
 
 	return EXIT_SUCCESS;
@@ -169,8 +163,11 @@ void deleteUrl() {
 //Function that capture the URL + send it to Curl via sendCurl() function
 void xss2() {
 	char url[255];
+	char name[255];
+	printf("name ? ");
+	scanf("%s", name);
 	printf("url ? ");
 	scanf("%s", url);
-	sendCurl2(url);
+	registerTarget(name, url);
 }
 
