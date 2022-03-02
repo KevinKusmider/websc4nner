@@ -17,6 +17,8 @@ GLOBAL global;
 
 int init_global() {
 
+    global.url = "64.227.39.88:31672";//https://www.zixem.altervista.org/SQLi/level1.php?id=%27" ; //"https://www.nootica.fr/customer/account/login/";
+
     if(!init_config())
         fprintf(stderr, "\nProblème lors de l'initialisation du fichier config dans global\n");
 
@@ -37,7 +39,13 @@ int init_global() {
  */
 int init_config() {
     FILE *config;
-    char fKey[55], fValue[55];
+    char fKey[55], *fValue;
+    fValue = malloc(55 * sizeof(char));
+    
+    if(fValue == NULL) {
+        fprintf(stderr, "\nImpossible de d'allouer la mémoire dans la fonction config\n");
+        return 0;
+    }    
 
     if((config = fopen("config.txt", "r")) == NULL) {
         fprintf(stderr, "\nImpossible de lire le fichier de configuraiton.\n");

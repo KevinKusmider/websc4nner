@@ -66,9 +66,55 @@ void displaySqlResult(MYSQL_RES *result) {
         }
 }
 
-int historyResult() {
+void add_target (char *name, char *url, char *ip, char *country, char *timeDisplay) {
+	char sql_cmd[2000];
+	char * addRequest= "INSERT INTO targets (name, url, ip, country, creationDate) VALUES('";
+	char temp[100]= "','";
+	char finish[6]="')";
+	//char creation[100]= "NULL";
+
+	strcat(temp, url); 
+	printf("\n%s\n",temp);
+	strcat(temp, "','");
+	strcat(temp, ip);
+	strcat(temp, "','");
+	strcat(temp, country);
+	strcat(temp, "','");
+	strcat(temp, timeDisplay);
+	strcat(temp,finish);
+	printf("\n%s\n", temp);
+	sprintf(sql_cmd,"%s%s%s", addRequest,name,temp);
+	printf("%s", sql_cmd);
+
 	// Select & Display every elements
-        if(mysql_query(global.mysql, "SELECT * FROM targets") != 0) {
+        if(mysql_query(global.mysql, sql_cmd) !=0) {
+		fprintf(stderr, "Query Failure\n");
+	}
+	
+	// result = mysql_use_result(mysql); // Store results
+	// displaySqlResult(result); // Display results
+
+	// Libération du jeu de resultat
+	// mysql_free_result(result);
+	// Fermeture de mysql
+}
+
+void del_target() {
+	int id;
+	char sql_cmd[1000];
+	char * addRequest= "DELETE FROM targets WHERE id=";
+	printf("Which URL you like to delete (select the id) : ");
+	scanf("%d", &id);
+	sprintf(sql_cmd,"%s%d", addRequest, id );
+	if(mysql_query(global.mysql, sql_cmd) !=0){
+		fprintf(stderr, "Query Failure\n");
+	   }
+	
+}
+
+int history_result() {
+	// Select & Display every elements
+        if(mysql_query(global.mysql, "SELECT * FROM history") != 0) {
                 if(config_check("debug", "true"))
                         fprintf(stderr, "\nRequête impossible à executer\n");
                 return 0;

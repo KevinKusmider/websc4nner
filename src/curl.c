@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <regex.h>
+//#include<conio.h>
+#include<time.h>
 
 // Imported libraries
 #include <curl/curl.h>
@@ -12,6 +14,8 @@
 #include <global.h>
 #include <functions.h>
 #include <curl.h>
+#include <main.h>
+#include <database.h>
 
 extern GLOBAL global;
 
@@ -46,7 +50,6 @@ int send_curl(char *url, char * postfield) {
 		curl_easy_setopt(curl, CURLOPT_URL, url);
 
 	if(postfield != NULL) {
-		printf("\npostfield in sendcurl %s\n", postfield);
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postfield);
 	}
@@ -63,6 +66,8 @@ int send_curl(char *url, char * postfield) {
 	/* Check for errors */
 	if(res != CURLE_OK && config_check("debug", "true")) {
 		fprintf(stderr, "\ncurl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+		fclose(file);
+		return 0;
 	}
 
 	/* always cleanup */
@@ -76,7 +81,14 @@ int send_curl(char *url, char * postfield) {
 	return 1;
 }
 
-void sendCurl2(char *url) {
+void register_target() {
+	char url[255];
+	char name[255];
+	printf("name ? ");
+	scanf("%s", name);
+	printf("url ? ");
+	scanf("%s", url);
+
 	CURL *curl;
 	CURLcode res;
 	FILE *fp;
@@ -111,8 +123,101 @@ void sendCurl2(char *url) {
 	}
 
 	curl_global_cleanup();
-	analyse("files/response.txt");
+	// analyse("files/response.txt");
+
+	CHAR_ITEM *ids = NULL;
+
+	search_lines_in_file("files/response.txt", "ipToCopy", &ids);
+	if(ids != NULL){
+		show_question("FOUND ID");
+		list_show_char_item(ids);
+	} else {
+		show_question("NOT FOUND");
+		return;
+	}
+
+
+	char *ip= findIp("\">","<", ids);
+	printf("%s", ip);
+
+	CHAR_ITEM *countries = NULL;
+
+	search_lines_in_file("files/response.txt", "lead", &countries);
+	if(ids != NULL){
+		show_question("FOUND ID");
+		list_show_char_item(countries);
+	} else {
+		show_question("NOT FOUND");
+		return;
+	}
+
+	char *country= findCountry(",","</", countries);
+	printf("%s", country);
+
+
+	char * timeDisplay;
+	time_t tm;
+    time(&tm);
+    printf("Current Date/Time = %s", ctime(&tm));
+	int i;
+	timeDisplay = ctime(&tm);
+	for(i=0; i< strlen(timeDisplay); i++){
+		if(timeDisplay[i] == '\n')
+			timeDisplay[i] = ' ';
+	}
+	// trim(&timeDisplay);
+	printf("%s", timeDisplay);
+	printf("hello");
+
+	add_target(name, url, ip, country, timeDisplay);
 }
+
+char * findIp(char *begin, char *final, CHAR_ITEM *line){
+	char *target = NULL;
+    char *start, *end;
+	
+	if ( start = strstr( line->value, begin ) )
+    {
+        start += strlen( begin );
+        if ( end = strstr( start, final ) )
+        {
+            target = ( char * )malloc( end - start + 1 );
+            memcpy( target, start, end - start );
+            target[end - start] = '\0';
+        }
+    }
+
+    // if ( target ) printf( "%s\n", target );
+	// printf("hello");
+
+	list_clean_char_item(line);
+
+    return target;
+}
+
+char * findCountry(char *begin, char *final, CHAR_ITEM *line){
+	char *target = NULL;
+    char *start, *end;
+	
+	if ( start = strstr( line->value, begin ) )
+    {
+        start += strlen( begin );
+        if ( end = strstr( start, final ) )
+        {
+            target = ( char * )malloc( end - start + 1 );
+            memcpy( target, start, end - start );
+            target[end - start] = '\0';
+        }
+    }
+
+    // if ( target ) printf( "%s\n", target );
+	// printf("hello");
+
+	list_clean_char_item(line);
+
+    return target;
+}
+
 
 int search_lines_in_file(char *fileName, char *find, CHAR_ITEM **start) {
 	FILE *file;
@@ -159,6 +264,9 @@ int get_attr_from_line(char *key, char **attr, char *line) {
 	}
 
 	if((attrStart = strstr(line, key)) == NULL) {
+		*attr = NULL;
+		if(config_check("debug", "true"))
+			printf("\nAttribut %s de l'input non trouvé\n", key);
 		return 0;
 	}
 
@@ -229,7 +337,7 @@ int analyse(char *fileName) {
         return 1;
 }
 
-void SaveData (char *url, char *inputCommand) {
+void saveData (char *url, char *inputCommand) {
 	char sql_cmd[1000];
 	char * addRequest= "INSERT INTO History (url, command) VALUES('";
 	char temp[100]= "','";

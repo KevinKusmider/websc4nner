@@ -4,7 +4,7 @@ SRC_DIR = src/
 SRC_EXT = .c
 
 CFLAGS = $(shell mysql_config --cflags) $(shell pkg-config --cflags gtk+-3.0) $(shell curl-config --cflags) -I./headers
-LIBS = $(shell mysql_config --libs) $(shell pkg-config --libs gtk+-3.0) $(shell curl-config --libs)
+LIBS = $(shell mysql_config --libs) $(shell pkg-config --libs gtk+-3.0) $(shell curl-config --libs) -rdynamic
 
 DB_USER = webscanner_user
 DB_PASSWORD = Secure11
@@ -19,7 +19,7 @@ install:
 	apt-get install libcurl-dev
 
 prog:
-	@gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS)
+	@gcc -o $(PROGRAM) $(CFLAGS) $(FILES) $(LIBS) 
 	@./main
 
 newprog:
