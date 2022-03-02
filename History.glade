@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.2 -->
+<interface>
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkWindow" id="window_main">
+    <property name="can_focus">False</property>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkLabel" id="MyLabel">
+            <property name="width_request">880</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Websc4nner</property>
+            <property name="justify">center</property>
+          </object>
+          <packing>
+            <property name="y">45</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="sqli">
+            <property name="label" translatable="yes">Search</property>
+            <property name="width_request">104</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="show_database" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">40</property>
+            <property name="y">145</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="width_request">880</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Abdullah HAMED &amp; Kevin KUSMIDER 2022</property>
+          </object>
+          <packing>
+            <property name="y">450</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView">
+            <property name="width_request">508</property>
+            <property name="height_request">311</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="x">225</property>
+            <property name="y">143</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

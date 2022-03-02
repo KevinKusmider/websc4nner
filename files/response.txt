@@ -244,7 +244,7 @@ img.emoji {
 										<form action="" method="post">
 						<div class="row text-center">
 							<div class="col-sm-8">
-								<input type="text"  name="url" value="https://www.myges.fr/#/" size="40" placeholder="URL du serveur distant. Exemple : mon-adresse-ip.fr">
+								<input type="text"  name="url" value="https://myges.fr/common/project-group-gestion/196811" size="40" placeholder="URL du serveur distant. Exemple : mon-adresse-ip.fr">
 							</div>
 							<div class="col-sm-4">
 								<button type="submit" value="Trouver" class="btn btn--primary type--uppercase">Trouver</button>
@@ -447,5 +447,5 @@ Performance optimized by W3 Total Cache. Learn more: https://www.boldgrid.com/w3
 
 Page Caching using disk: enhanced (Requested method is POST) 
 
-Served from: mon-adresse-ip.fr @ 2022-02-23 21:16:46 by W3 Total Cache
+Served from: mon-adresse-ip.fr @ 2022-03-02 18:14:39 by W3 Total Cache
 -->
