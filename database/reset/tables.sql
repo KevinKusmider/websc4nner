@@ -51,9 +51,9 @@ CREATE TABLE `targets` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(55) NOT NULL,
   `url` varchar(255) NOT NULL,
-  `ip` varchar(55) NOT NULL,
-  `country` varchar(55) NOT NULL,
-  `creationDate` datetime DEFAULT NULL,
+  `ip` varchar(55) DEFAULT NULL,
+  `country` varchar(55) DEFAULT NULL,
+  `creationDate` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
