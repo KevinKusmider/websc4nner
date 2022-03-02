@@ -3,6 +3,7 @@
 
     void clean_stdin();
     int trim(char **string);
+    void show_question(char * question);
     int checkIntResponse(int value, int min, int max);
     int askForInt(char *question, int min, int max);
 

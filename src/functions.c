@@ -55,6 +55,12 @@ int trim(char **string) {
         return 1;
 }
 
+void show_question(char * question) {
+	printf("\n=====================================================================\n");
+	printf("  %s\n", question);
+	printf("=====================================================================\n");
+}
+
 int checkIntResponse(int value, int min, int max) {
     if(value >= min && value <= max) {
         return 1;

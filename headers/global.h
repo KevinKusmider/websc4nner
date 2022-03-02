@@ -11,6 +11,7 @@
     {
 
         CHAR_ITEM *configs;
+        char * url;
         MYSQL *mysql;
         MYSQL_RES *result;
         MYSQL_STMT *stmt;

@@ -46,7 +46,6 @@ int send_curl(char *url, char * postfield) {
 		curl_easy_setopt(curl, CURLOPT_URL, url);
 
 	if(postfield != NULL) {
-		printf("\npostfield in sendcurl %s\n", postfield);
 		curl_easy_setopt(curl, CURLOPT_POST, 1L);
 		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postfield);
 	}
@@ -63,6 +62,8 @@ int send_curl(char *url, char * postfield) {
 	/* Check for errors */
 	if(res != CURLE_OK && config_check("debug", "true")) {
 		fprintf(stderr, "\ncurl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+		fclose(file);
+		return 0;
 	}
 
 	/* always cleanup */
@@ -159,6 +160,9 @@ int get_attr_from_line(char *key, char **attr, char *line) {
 	}
 
 	if((attrStart = strstr(line, key)) == NULL) {
+		*attr = NULL;
+		if(config_check("debug", "true"))
+			printf("\nAttribut %s de l'input non trouvé\n", key);
 		return 0;
 	}
 
