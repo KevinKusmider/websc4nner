@@ -24,7 +24,9 @@ void injection_sql() {
 			return;
 		
 		case 1:
+            break;
 
+		case 2:
             // Selection de l'URL & Récupération code HTML
             if(global.url == NULL) { // Demander l'url si aucune n'a été selectionnée
                 show_question("Menu > Injection SQL > Choix de l'URL");
@@ -156,80 +158,6 @@ void injection_sql() {
             if(sqliChance) printf("\n  | Information sur à %3d%% %-38s |", sqliChance, "");
             printf("\n  | %-61s |", "");
             printf("\n  +---------------------------------------------------------------+\n");
-
-    /*
-			CHAR_ITEM *inputs = NULL;
-			search_lines_in_file("files/response.txt", "<input", &inputs);
-
-			if(inputs != NULL) {
-				show_question("FOUND INPUTS");
-				list_show_char_item(inputs);
-			} else {
-				show_question("NO INPUTS FOUND");
-				return ;
-			}
-
-			CHAR_ITEM *names = NULL;
-			CHAR_ITEM *input = inputs;
-
-			while(input != NULL) {
-				char *name = NULL;
-				char *type = NULL;
-				
-				if(get_attr_from_line("name=", &name, input->value)) {
-					if(get_attr_from_line("type=", &type, input->value)) {
-						list_add_char_item(&names, type, name);
-					} else {
-						list_add_char_item(&names, "None", name);
-					}
-				}
-				
-				if(name != NULL) free(name);
-				if(type != NULL) free(type);
-				input = input->next;
-			}
-
-			CHAR_ITEM *name = names;
-			char postfields[255] = "";
-
-			printf("\n");
-			show_question("Remplir les inputs");
-			while (name != NULL)
-			{
-				printf("\n\ninputsss\n");
-				if(name->key != NULL && strcmp(name->key, "hidden")) {
-					char valeur[255];
-					printf("Valeur pour l'input de type : %s et name : %s ? ", "NULL" , name->value);
-					strcat(postfields, name->value);
-					strcat(postfields, "=");
-					scanf("%s", valeur);
-					strcat(postfields, valeur);
-				} else {
-					
-					//strcat(postfields, name->);
-					//strcat(postfields, "=");
-					//strcat(postfields, name->value);
-					
-				}
-
-
-				if((name = name->next) != NULL && strcmp(name->key, "hidden")) {
-					strcat(postfields, "&");
-				}
-			}
-
-			printf("\n\npostfiles %s\n\n", postfields);
-
-			send_curl(url, postfields);
-
-			list_show_char_item(names);
-
-			list_clean_char_item(names);
-			list_clean_char_item(inputs);
-            */
-			break;
-
-		case 2:
 			break;
 	}
 }

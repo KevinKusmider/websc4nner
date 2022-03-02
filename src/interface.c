@@ -17,7 +17,7 @@ void interface_init(int *argc,char ***argv) {
 	gtk_init(argc, argv);
 
 	builder = gtk_builder_new();
-	gtk_builder_add_from_file(builder, "original.glade", NULL);
+	gtk_builder_add_from_file(builder, "files/glade/original.glade", NULL);
 
 	window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
 	//mylabel = GTK_LABEL(gtk_builder_get_object(builder, "MyLabel"));
@@ -41,37 +41,27 @@ void interface_init(int *argc,char ***argv) {
         
 
     // } Display_struc;
-
-
-
-
-
 }
 
 void button_clicked(){
-		printf("Button clicked \n");
-		
-		
+	printf("Button clicked \n");
 
-		builder = gtk_builder_new();
-		gtk_builder_add_from_file(builder, "History.glade", NULL);
+	builder = gtk_builder_new();
+	gtk_builder_add_from_file(builder, "files/glade/History.glade", NULL);
 
+	window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
+	//mylabel = GTK_LABEL(gtk_builder_get_object(builder, "MyLabel"));
+	
+	g_signal_connect(G_OBJECT(window), "destroy", (GCallback) gtk_main_quit, NULL);
+	
 
-
-		window = GTK_WIDGET(gtk_builder_get_object(builder, "window_main"));
-		//mylabel = GTK_LABEL(gtk_builder_get_object(builder, "MyLabel"));
-		
-		g_signal_connect(G_OBJECT(window), "destroy", (GCallback) gtk_main_quit, NULL);
-		
-
-		gtk_builder_connect_signals(builder, NULL);
-		g_object_unref(builder);
+	gtk_builder_connect_signals(builder, NULL);
+	g_object_unref(builder);
 
 
-		gtk_widget_show_all(window);
-		gtk_main();
-			
-		}
+	gtk_widget_show_all(window);
+	gtk_main();
+}
 
 void show_database(){
 	

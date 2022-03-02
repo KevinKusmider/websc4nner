@@ -15,6 +15,7 @@
 #include <functions.h>
 #include <curl.h>
 #include <main.h>
+#include <database.h>
 
 extern GLOBAL global;
 
@@ -80,7 +81,14 @@ int send_curl(char *url, char * postfield) {
 	return 1;
 }
 
-void registerTarget(char *name, char *url) {
+void register_target() {
+	char url[255];
+	char name[255];
+	printf("name ? ");
+	scanf("%s", name);
+	printf("url ? ");
+	scanf("%s", url);
+
 	CURL *curl;
 	CURLcode res;
 	FILE *fp;
@@ -161,14 +169,7 @@ void registerTarget(char *name, char *url) {
 	printf("%s", timeDisplay);
 	printf("hello");
 
-
-
-	addWebsite(name, url, ip, country, timeDisplay);
-
-
-	
-	
-
+	add_target(name, url, ip, country, timeDisplay);
 }
 
 char * findIp(char *begin, char *final, CHAR_ITEM *line){
@@ -216,8 +217,6 @@ char * findCountry(char *begin, char *final, CHAR_ITEM *line){
 
     return target;
 }
-
-
 
 
 int search_lines_in_file(char *fileName, char *find, CHAR_ITEM **start) {
@@ -349,38 +348,6 @@ void saveData (char *url, char *inputCommand) {
 	strcat(temp,finish);
 	printf("\n%s\n", temp);
 	sprintf(sql_cmd,"%s%s%s", addRequest,url,temp);
-	printf("%s", sql_cmd);
-	// Select & Display every elements
-    if(mysql_query(global.mysql, sql_cmd) !=0) {
-		fprintf(stderr, "Query Failure\n");
-	}					// Make query
-	
-	// result = mysql_use_result(mysql); // Store results
-	// displaySqlResult(result); // Display results
-
-	// Libération du jeu de resultat
-	// mysql_free_result(result);
-	// Fermeture de mysql
-}
-
-void addWebsite (char *name, char *url, char *ip, char *country, char *timeDisplay){
-	char sql_cmd[2000];
-	char * addRequest= "INSERT INTO targets (name, url, ip, country, creationDate) VALUES('";
-	char temp[100]= "','";
-	char finish[6]="')";
-	//char creation[100]= "NULL";
-
-	strcat(temp, url); 
-	printf("\n%s\n",temp);
-	strcat(temp, "','");
-	strcat(temp, ip);
-	strcat(temp, "','");
-	strcat(temp, country);
-	strcat(temp, "','");
-	strcat(temp, timeDisplay);
-	strcat(temp,finish);
-	printf("\n%s\n", temp);
-	sprintf(sql_cmd,"%s%s%s", addRequest,name,temp);
 	printf("%s", sql_cmd);
 	// Select & Display every elements
     if(mysql_query(global.mysql, sql_cmd) !=0) {

@@ -17,7 +17,7 @@ GLOBAL global;
 
 int init_global() {
 
-    global.url = "64.227.39.89:32051";//https://www.zixem.altervista.org/SQLi/level1.php?id=%27" ; //"https://www.nootica.fr/customer/account/login/";
+    global.url = "64.227.39.88:31672";//https://www.zixem.altervista.org/SQLi/level1.php?id=%27" ; //"https://www.nootica.fr/customer/account/login/";
 
     if(!init_config())
         fprintf(stderr, "\nProblème lors de l'initialisation du fichier config dans global\n");

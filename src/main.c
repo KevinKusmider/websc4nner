@@ -46,9 +46,9 @@ int main (int argc, char **argv) {
 					injection_sql();
 					break;
 				case 3:
-					xss2();
-				case 5:
-					historyResult();
+					break;
+				case 4:
+					history_result();
 					break;
 				case 0:
 					// APPELLER FUNC FREE GLOBAL
@@ -70,9 +70,9 @@ int main (int argc, char **argv) {
 int show_menu() {
 	int option;
 	show_question("Menu");
-	printf("\n 1. Websistes\n 2. Injection SQL\n 3. Faille XSS\n 4. Test general\n 5. Historique\n 0. Stop program\n");
+	printf("\n 1. Websistes\n 2. Injection SQL\n 3. Faille XSS\n 4. Historique\n 0. Stop program\n");
 
-	option = askForInt("\n===================#?:", 0, 5);
+	option = askForInt("\n===================#?:", 0, 4);
 
 	return option;
 }
@@ -120,54 +120,18 @@ void websites() {
 		switch (askForInt("\n===================#?:", 0, 3)) {
 			case 0:
 				return;
+			case 1:
+				register_target();
+				break;
+			case 2:
+				del_target();
+				break;
+			case 3:
+				break;
 		}
 	}
 }
 
-void addUrl() {
-	char url[255];
-	char inputCommand[255];
-	char sql_cmd[1000];
-	printf("url ? ");
-	scanf("%s", url);
-	char * addRequest= "INSERT INTO Websites (url) VALUES('";
-	char finish[6]="')";
-	sprintf(sql_cmd,"%s%s%s", addRequest, url, finish );
-	if(mysql_query(global.mysql, sql_cmd) !=0){
-		fprintf(stderr, "Query Failure\n");
-	   }
-}
 
-void showUrl() {
-	// Select & Display every elements
-    mysql_query(global.mysql, "SELECT * FROM Websites"); // Make query
-    global.result = mysql_use_result(global.mysql); // Store results
-    displaySqlResult(global.result); // Display result
-    // Libération du jeu de resultat
-    mysql_free_result(global.result);
-}
 
-void deleteUrl() {
-	int id;
-	char sql_cmd[1000];
-	char * addRequest= "DELETE FROM Websites WHERE id=";
-	printf("Which URL you like to delete (select the id) : ");
-	scanf("%d", &id);
-	sprintf(sql_cmd,"%s%d", addRequest, id );
-	if(mysql_query(global.mysql, sql_cmd) !=0){
-		fprintf(stderr, "Query Failure\n");
-	   }
-	
-}
-
-//Function that capture the URL + send it to Curl via sendCurl() function
-void xss2() {
-	char url[255];
-	char name[255];
-	printf("name ? ");
-	scanf("%s", name);
-	printf("url ? ");
-	scanf("%s", url);
-	registerTarget(name, url);
-}
 
