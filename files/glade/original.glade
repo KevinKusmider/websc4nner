@@ -19,13 +19,17 @@
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Websc4nner</property>
             <property name="justify">center</property>
+            <attributes>
+              <attribute name="font-desc" value="Samyak Tamil Bold 17"/>
+            </attributes>
           </object>
           <packing>
+            <property name="x">-9</property>
             <property name="y">45</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="sqli">
+          <object class="GtkButton" id="SQLi">
             <property name="label" translatable="yes">SQLi</property>
             <property name="width_request">104</property>
             <property name="height_request">80</property>
@@ -35,11 +39,11 @@
           </object>
           <packing>
             <property name="x">40</property>
-            <property name="y">145</property>
+            <property name="y">94</property>
           </packing>
         </child>
         <child>
-          <object class="GtkButton">
+          <object class="GtkButton" id="XSS">
             <property name="label" translatable="yes">XSS</property>
             <property name="width_request">104</property>
             <property name="height_request">80</property>
@@ -49,13 +53,13 @@
           </object>
           <packing>
             <property name="x">40</property>
-            <property name="y">245</property>
+            <property name="y">194</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="History">
-            <property name="label" translatable="yes">Historique</property>
-            <property name="width_request">100</property>
+            <property name="label" translatable="yes">History</property>
+            <property name="width_request">106</property>
             <property name="height_request">80</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -64,7 +68,7 @@
           </object>
           <packing>
             <property name="x">40</property>
-            <property name="y">345</property>
+            <property name="y">294</property>
           </packing>
         </child>
         <child>
@@ -126,7 +130,23 @@
             <property name="label" translatable="yes">Abdullah HAMED &amp; Kevin KUSMIDER 2022</property>
           </object>
           <packing>
+            <property name="x">-10</property>
             <property name="y">450</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="Target">
+            <property name="label" translatable="yes">Target</property>
+            <property name="width_request">105</property>
+            <property name="height_request">80</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="button_clicked2" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">40</property>
+            <property name="y">394</property>
           </packing>
         </child>
       </object>

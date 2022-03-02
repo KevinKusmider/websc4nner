@@ -42,7 +42,7 @@ int send_curl(char *url, char * postfield) {
 
 	if((file = fopen("files/response.txt","wb")) == NULL) {
 		if(config_check("debug", "true"))
-			fprintf(stderr, "\nImpossible d'ouvrir le ficher responses.txt lors de l'envoi de la reqûete.\n");
+			fprintf(stderr, "\nImpossible d'ouvrir le ficher response.txt lors de l'envoi de la reqûete.\n");
 		return 0;
 	}
 
@@ -57,14 +57,13 @@ int send_curl(char *url, char * postfield) {
 	if(file != NULL)
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, file);
 
-	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+	//curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-
 
 	/* Perform the request, res will get the return code */
 	res = curl_easy_perform(curl);
 	/* Check for errors */
-	if(res != CURLE_OK && config_check("debug", "true")) {
+	if(res != CURLE_OK) {
 		fprintf(stderr, "\ncurl_easy_perform() failed: %s\n", curl_easy_strerror(res));
 		fclose(file);
 		return 0;
@@ -81,98 +80,69 @@ int send_curl(char *url, char * postfield) {
 	return 1;
 }
 
-void register_target() {
+int register_target() {
 	char url[255];
 	char name[255];
-	printf("name ? ");
+	char *ip = NULL;
+	char *country = NULL;
+
+	show_question("Menu > Websites > Add");
+
+	// Demander le nom et l'url
+	printf("\n  %-10s : ", "Name");
 	scanf("%s", name);
-	printf("url ? ");
+	printf("  %-10s : ", "URL");
 	scanf("%s", url);
 
-	CURL *curl;
-	CURLcode res;
-	FILE *fp;
-	//char default="https://mon-adresse-ip.fr/trouver-une-adresse-ip/"
-	char inputName[255] ="url=";
+	// Récuperer le HTML du site qui permet d'avoir les infos de l'url
+	char inputName[255] = "url=";
 	strcat(inputName,url);
-	printf("\n%s\n", inputName);
-	curl_global_init(CURL_GLOBAL_ALL);
-
-	curl = curl_easy_init();
-	if(curl) {
-		fp = fopen("files/response.txt","wb");
-		curl_easy_setopt(curl, CURLOPT_URL, "https://mon-adresse-ip.fr/trouver-une-adresse-ip/");
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, inputName);
-		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-		curl_easy_setopt(curl, CURLOPT_POST, 1L);
-		/*  Now specify the POST data */
-
-		/* Perform the request, res will get the return code */
-		res = curl_easy_perform(curl);
-		/* Check for errors */
-		if(res != CURLE_OK) {
-			fprintf(stderr, "curl_easy_perform() failed: %s\n",
-			curl_easy_strerror(res));
-		}
-
-		/* always cleanup */
-		fclose(fp);
-		curl_easy_cleanup(curl);
+	if(!send_curl("https://mon-adresse-ip.fr/trouver-une-adresse-ip/", inputName)) {
+		printf("\nImpossible de récupérer les informations du site\n");
+		return 0;
 	}
 
-	curl_global_cleanup();
-	// analyse("files/response.txt");
-
-	CHAR_ITEM *ids = NULL;
-
-	search_lines_in_file("files/response.txt", "ipToCopy", &ids);
-	if(ids != NULL){
-		show_question("FOUND ID");
-		list_show_char_item(ids);
-	} else {
-		show_question("NOT FOUND");
-		return;
+	// Rechercher les informations nécessaires 
+	// IP
+	CHAR_ITEM *ips = NULL;
+	search_lines_in_file("files/response.txt", "ipToCopy", &ips);
+	if(ips != NULL){
+		ip = find_content("\">","<", ips);
 	}
-
-
-	char *ip= findIp("\">","<", ids);
-	printf("%s", ip);
-
+	// Pays
 	CHAR_ITEM *countries = NULL;
-
 	search_lines_in_file("files/response.txt", "lead", &countries);
-	if(ids != NULL){
-		show_question("FOUND ID");
-		list_show_char_item(countries);
-	} else {
-		show_question("NOT FOUND");
-		return;
+	if(countries != NULL){
+		country = find_content(",","</", countries);
 	}
 
-	char *country= findCountry(",","</", countries);
-	printf("%s", country);
+	if(ip == NULL || country == NULL) {
+		printf("\nImpossible de récupérer les informations de l'ip ou du pays\n");
+		return 0;
+	}
 
+	printf("  %-10s : %s\n", "IP", ip);
+	printf("  %-10s : %s\n", "Country", country);
 
+	// Récupérer la dat
 	char * timeDisplay;
+	int i;
 	time_t tm;
     time(&tm);
-    printf("Current Date/Time = %s", ctime(&tm));
-	int i;
 	timeDisplay = ctime(&tm);
-	for(i=0; i< strlen(timeDisplay); i++){
+	for(i=0; i< strlen(timeDisplay); i++) { // Enlever le retour à la ligne
 		if(timeDisplay[i] == '\n')
 			timeDisplay[i] = ' ';
 	}
-	// trim(&timeDisplay);
-	printf("%s", timeDisplay);
-	printf("hello");
 
-	add_target(name, url, ip, country, timeDisplay);
+	if(!add_target(name, url, ip, country, timeDisplay)) {
+		fprintf(stderr, "\nImpossible d'ajouter la cible dans la base de données\n");
+	}
+
+	return 1;
 }
 
-char * findIp(char *begin, char *final, CHAR_ITEM *line){
+char * find_content(char *begin, char *final, CHAR_ITEM *line) {
 	char *target = NULL;
     char *start, *end;
 	
@@ -185,33 +155,9 @@ char * findIp(char *begin, char *final, CHAR_ITEM *line){
             memcpy( target, start, end - start );
             target[end - start] = '\0';
         }
-    }
-
-    // if ( target ) printf( "%s\n", target );
-	// printf("hello");
-
-	list_clean_char_item(line);
-
-    return target;
-}
-
-char * findCountry(char *begin, char *final, CHAR_ITEM *line){
-	char *target = NULL;
-    char *start, *end;
-	
-	if ( start = strstr( line->value, begin ) )
-    {
-        start += strlen( begin );
-        if ( end = strstr( start, final ) )
-        {
-            target = ( char * )malloc( end - start + 1 );
-            memcpy( target, start, end - start );
-            target[end - start] = '\0';
-        }
-    }
-
-    // if ( target ) printf( "%s\n", target );
-	// printf("hello");
+    } else {
+		return NULL;
+	}
 
 	list_clean_char_item(line);
 
@@ -337,27 +283,4 @@ int analyse(char *fileName) {
         return 1;
 }
 
-void saveData (char *url, char *inputCommand) {
-	char sql_cmd[1000];
-	char * addRequest= "INSERT INTO History (url, command) VALUES('";
-	char temp[100]= "','";
-	char finish[6]="')";
 
-	strcat(temp, inputCommand); 
-	printf("\n%s\n",temp);
-	strcat(temp,finish);
-	printf("\n%s\n", temp);
-	sprintf(sql_cmd,"%s%s%s", addRequest,url,temp);
-	printf("%s", sql_cmd);
-	// Select & Display every elements
-    if(mysql_query(global.mysql, sql_cmd) !=0) {
-		fprintf(stderr, "Query Failure\n");
-	}					// Make query
-	
-	// result = mysql_use_result(mysql); // Store results
-	// displaySqlResult(result); // Display results
-
-	// Libération du jeu de resultat
-	// mysql_free_result(result);
-	// Fermeture de mysql
-}

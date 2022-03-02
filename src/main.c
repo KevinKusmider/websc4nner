@@ -15,6 +15,7 @@
 #include <global.h>
 #include <main.h>
 #include <sqli.h>
+#include <xss.h>
 
 
 extern GLOBAL global;
@@ -46,6 +47,7 @@ int main (int argc, char **argv) {
 					injection_sql();
 					break;
 				case 3:
+					xss();
 					break;
 				case 4:
 					history_result();
@@ -83,7 +85,7 @@ void show_websites() {
 	MYSQL_ROW row;
 	size_t i = 0;
 	size_t num_champs = 0;
-	int flengths[6] = {3,20,55,20,15,15};
+	int flengths[6] = {3,20,55,20,15,25};
 
 	mysql_query(global.mysql, "SELECT * FROM targets");
 	global.result = mysql_store_result(global.mysql);
@@ -92,9 +94,9 @@ void show_websites() {
 	fields = mysql_fetch_fields(global.result);
 
 	// Afficher les titres des colonnes
-	printf("\n");
+	printf("\n+-----+----------------------+---------------------------------------------------------+----------------------+-----------------+----------------------------+\n");
 	for(i=0 ; i<num_champs ; i++) {
-		printf("| %-*s ", flengths[i], fields[i].name);
+		printf("| %-*s %s", flengths[i], fields[i].name, i == num_champs-1 ? " |" : "");
 	}
 	printf("\n");
 
@@ -104,16 +106,20 @@ void show_websites() {
 		lengths = mysql_fetch_lengths(global.result);
 
 		for(i = 0; i < num_champs; i++) {
-				printf("| %-*s ", flengths[i], row[i] ? row[i] : "NULL");
+				printf("| %-*s %s", flengths[i], row[i] ? row[i] : "NULL", i == num_champs-1 ? " |" : "");
 		}
 		printf("\n");
 	}
+	printf("+-----+----------------------+---------------------------------------------------------+----------------------+-----------------+----------------------------+\n");
+
 	mysql_free_result(global.result);
+	global.result = NULL;
 }
 
 void websites() {
 	while(1) {
 		show_question("Menu > Websites");
+		printf("\nSelected URL : %s\n", global.url != NULL ? global.url : "NONE");
 		show_websites();
 		printf("\n 1. Ajouter\n 2. Supprimer\n 3. Sélectionner\n 0. Retour\n");
 
@@ -127,6 +133,7 @@ void websites() {
 				del_target();
 				break;
 			case 3:
+				select_target();
 				break;
 		}
 	}

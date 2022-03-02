@@ -5,8 +5,10 @@
     int mysql_check_error();
     int database_connect(MYSQL *mysql);
     void displaySqlResult(MYSQL_RES *result);
-    void add_target (char *name, char *url, char *ip, char *country, char *timeDisplay);
-    void del_target();
+    int add_target (char *name, char *url, char *ip, char *country, char *timeDisplay);
+    int del_target();
+    int select_target();
     int history_result();
+    void saveData (char *url, char *inputCommand);
 
 #endif

@@ -66,13 +66,13 @@ void displaySqlResult(MYSQL_RES *result) {
         }
 }
 
-void add_target (char *name, char *url, char *ip, char *country, char *timeDisplay) {
+int add_target (char *name, char *url, char *ip, char *country, char *timeDisplay) {
 	char sql_cmd[2000];
 	char * addRequest= "INSERT INTO targets (name, url, ip, country, creationDate) VALUES('";
 	char temp[100]= "','";
 	char finish[6]="')";
-	//char creation[100]= "NULL";
 
+        // Création de la requete
 	strcat(temp, url); 
 	printf("\n%s\n",temp);
 	strcat(temp, "','");
@@ -82,34 +82,95 @@ void add_target (char *name, char *url, char *ip, char *country, char *timeDispl
 	strcat(temp, "','");
 	strcat(temp, timeDisplay);
 	strcat(temp,finish);
-	printf("\n%s\n", temp);
 	sprintf(sql_cmd,"%s%s%s", addRequest,name,temp);
-	printf("%s", sql_cmd);
 
 	// Select & Display every elements
-        if(mysql_query(global.mysql, sql_cmd) !=0) {
-		fprintf(stderr, "Query Failure\n");
+        if(mysql_query(global.mysql, sql_cmd) != 0) {
+                fprintf(stderr, "\nQuery Failure\n");
+                return 0;
 	}
-	
-	// result = mysql_use_result(mysql); // Store results
-	// displaySqlResult(result); // Display results
 
-	// Libération du jeu de resultat
-	// mysql_free_result(result);
-	// Fermeture de mysql
+        return 1;
 }
 
-void del_target() {
+int del_target() {
 	int id;
-	char sql_cmd[1000];
+	char sql_cmd[255];
 	char * addRequest= "DELETE FROM targets WHERE id=";
-	printf("Which URL you like to delete (select the id) : ");
-	scanf("%d", &id);
+
+        show_question("Menu > Websites > Add");
+        id = askForInt("\n  Which URL you like to select (select the id) : ", 0, 1000);
 	sprintf(sql_cmd,"%s%d", addRequest, id );
-	if(mysql_query(global.mysql, sql_cmd) !=0){
-		fprintf(stderr, "Query Failure\n");
-	   }
-	
+
+	if(mysql_query(global.mysql, sql_cmd) !=0 ) {
+		fprintf(stderr, "\nQuery Failure\n");
+                return 0;
+	}
+
+        return 1;
+}
+
+int select_target() {
+	int id;
+	char sql_cmd[255];
+	char * addRequest= "SELECT * FROM targets WHERE id=";
+        char url[255];
+
+        show_question("Menu > Websites > Select");
+        id = askForInt("\n  Which URL you would like to select (select the id) : ", 0, 1000);
+	sprintf(sql_cmd,"%s%d", addRequest, id );
+
+	if(mysql_query(global.mysql, sql_cmd) !=0 ) {
+		fprintf(stderr, "\nQuery Failure while select target\n");
+                return 0;
+	}
+        
+        if(global.result != NULL) {
+                mysql_free_result(global.result);
+        }
+
+        global.result = mysql_store_result(global.mysql); // Store results
+        if(!mysql_field_count(global.mysql)) {
+                fprintf(stderr, "\nID non trouvé\n");
+                return 0;
+        }
+
+        MYSQL_ROW row;
+        unsigned int i = 1;
+        unsigned int num_champs = 0;
+        unsigned long *lengths;
+        num_champs = mysql_num_fields(global.result);
+        if((row = mysql_fetch_row(global.result)) == NULL) {
+		fprintf(stderr, "\nImpossible de recuperer le row lors du select target\n");
+                if(global.result != NULL)
+                        mysql_free_result(global.result);
+                return 0;  
+        } 
+
+        //On stocke ces tailles dans le pointeur
+        lengths = mysql_fetch_lengths(global.result);
+
+        for(i = 0; i < num_champs; i++) {
+                if(i == 2) {
+                        sprintf(url, "%.*s", (int) lengths[i], row[i] ? row[i] : "NULL");
+                }
+        }
+
+        if(url == NULL || !strcasecmp(url, "NULL")) {
+                return 0;
+        }
+
+        if(global.url != NULL ) {
+                free(global.url);
+        }
+
+        global.url = malloc(sizeof(char) * strlen(url) + 1);
+        strcpy(global.url, url);
+
+        // Libération du jeu de resultat
+        mysql_free_result(global.result);
+
+        return 1;
 }
 
 int history_result() {
@@ -124,22 +185,34 @@ int history_result() {
 
         global.result = mysql_use_result(global.mysql); // Store results
         displaySqlResult(global.result); // Display result
+
         // Libération du jeu de resultat
         mysql_free_result(global.result);
 
         return 1;
 }
 
-/*
+void saveData (char *url, char *inputCommand) {
+	char sql_cmd[1000];
+	char * addRequest= "INSERT INTO History (url, command) VALUES('";
+	char temp[100]= "','";
+	char finish[6]="')";
 
-        // Select & Display every elements
-        mysql_query(mysql, "SELECT * FROM users"); // Make query
-        result = mysql_use_result(mysql); // Store results
-        // displaySqlResult(result); // Display results
+	strcat(temp, inputCommand); 
+	printf("\n%s\n",temp);
+	strcat(temp,finish);
+	printf("\n%s\n", temp);
+	sprintf(sql_cmd,"%s%s%s", addRequest,url,temp);
+	printf("%s", sql_cmd);
+	// Select & Display every elements
+    if(mysql_query(global.mysql, sql_cmd) !=0) {
+		fprintf(stderr, "Query Failure\n");
+	}					// Make query
+	
+	// result = mysql_use_result(mysql); // Store results
+	// displaySqlResult(result); // Display results
 
-        // Libération du jeu de resultat
-        mysql_free_result(result);
-        // Fermeture de mysql
-        mysql_close(mysql);
-
-*/
+	// Libération du jeu de resultat
+	// mysql_free_result(result);
+	// Fermeture de mysql
+}
