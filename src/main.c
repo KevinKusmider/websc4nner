@@ -14,8 +14,8 @@
 #include <curl.h>
 #include <global.h>
 #include <main.h>
+#include <sqli.h>
 
-#define CHAR_LENGTH 255
 
 extern GLOBAL global;
 
@@ -65,12 +65,6 @@ int main (int argc, char **argv) {
 	}
 
 	return EXIT_SUCCESS;
-}
-
-void show_question(char * question) {
-	printf("\n=====================================================================\n");
-	printf("  %s\n", question);
-	printf("=====================================================================\n");
 }
 
 int show_menu() {
@@ -164,97 +158,6 @@ void deleteUrl() {
 		fprintf(stderr, "Query Failure\n");
 	   }
 	
-}
-
-void injection_sql() {
-	int option;
-	char url[CHAR_LENGTH];
-
-	show_question("Menu > Injection SQL");
-	printf("\n 1. Automatique\n 2. Manuelle\n 0. Retour\n");
-
-	switch(askForInt("\n===================#?:", 0, 2)) {
-		case 0:
-			return;
-		
-		case 1:
-			printf("url ? ");
-			scanf("%s", url);
-
-			send_curl(url, NULL);
-
-			CHAR_ITEM *inputs = NULL;
-			search_lines_in_file("files/response.txt", "<input", &inputs);
-
-			if(inputs != NULL) {
-				show_question("FOUND INPUTS");
-				list_show_char_item(inputs);
-			} else {
-				show_question("NO INPUTS FOUND");
-				return ;
-			}
-
-			CHAR_ITEM *names = NULL;
-			CHAR_ITEM *input = inputs;
-
-			while(input != NULL) {
-				char *name = NULL;
-				char *type = NULL;
-				
-				if(get_attr_from_line("name=", &name, input->value)) {
-					if(get_attr_from_line("type=", &type, input->value)) {
-						list_add_char_item(&names, type, name);
-					} else {
-						list_add_char_item(&names, "", name);
-					}
-				}
-				
-				if(name != NULL) free(name);
-				if(type != NULL) free(type);
-				input = input->next;
-			}
-
-			CHAR_ITEM *name = names;
-			char postfields[255] = "";
-
-			printf("\n");
-			show_question("Remplir les inputs");
-			while (name != NULL)
-			{
-				if(strcmp(name->key, "hidden")) {
-					char valeur[255];
-					printf("Valeur pour l'input de type : %s et name : %s ? ", name->key, name->value);
-					strcat(postfields, name->value);
-					strcat(postfields, "=");
-					scanf("%s", valeur);
-					strcat(postfields, valeur);
-				} else {
-					/*
-					strcat(postfields, name->);
-					strcat(postfields, "=");
-					strcat(postfields, name->value);
-					*/
-				}
-
-
-				if((name = name->next) != NULL && strcmp(name->key, "hidden")) {
-					strcat(postfields, "&");
-				}
-			}
-
-			printf("\n\npostfiles %s\n\n", postfields);
-
-			send_curl(url, postfields);
-
-			list_show_char_item(names);
-
-			list_clean_char_item(names);
-			list_clean_char_item(inputs);
-			break;
-
-		case 2:
-			break;
-	}
 }
 
 //Function that capture the URL + send it to Curl via sendCurl() function
