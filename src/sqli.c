@@ -1,14 +1,19 @@
+/*** LIBRARIES ***/
+// GCC Standars
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+// Own Libraries
 #include <global.h>
 #include <functions.h>
 #include <curl.h>
 #include <sqli.h>
+#include <database.h>
 
 
 extern GLOBAL global;
+
 
 void injection_sql() {
 	int option;
@@ -32,12 +37,12 @@ void injection_sql() {
                 show_question("Menu > Injection SQL > Choix de l'URL");
 			    printf("\n===================# URL ? ");
 			    scanf("%s", url);
-                printf("\n  Récupération du code HTML de L'URL/IP : %s", url);
+                printf("\n  Récupération du code HTML de L'URL/IP : %s\n", url);
                 if(!send_curl(url, NULL)) break; // Envoi de la requete curl
             } else { // Sinon utiliser l'url selectionnée qui se trouve dans la struct global
                 show_question("Menu > Injection SQL");
                 printf("\n  Récupération du code HTML de L'URL/IP : %s\n", global.url);
-                send_curl(global.url, NULL); // Envoi de la requete curl
+                if(!send_curl(global.url, NULL)) break; // Envoi de la requete curl
             }
 
             // Récupération des formulaires et des inputs
@@ -114,8 +119,9 @@ void injection_sql() {
 
             if(global.url != NULL) {
                 send_curl(global.url, postfields);
+                history_write ("SQLI", global.url, postfields);
             } else {
-                send_curl(url, postfields);
+                history_write ("SQLI", global.url, postfields);
             }
 
             list_go_start_form_item(&forms); // Revenir au début de la liste au cas ou le formulaire choisi n'est pas le premier
