@@ -1,6 +1,7 @@
 #ifndef __SQLI_H__
 #define __SQLI_H_
 
+    /*** PROTOTYPES ***/
     void injection_sql();
     int get_forms(char *fileName, FORM_ITEM **forms);
     char * get_form_start_tag(FILE * file);

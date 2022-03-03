@@ -1,20 +1,25 @@
+/*** LIBRARIES ***/
+// GCC Standars
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+// Own Libraries
 #include <global.h>
 #include <functions.h>
 #include <curl.h>
 #include <sqli.h>
 #include <database.h>
 
+
 extern GLOBAL global;
+
 
 void xss() {
 	int option;
 	char url[255];
     int i = 0, idForm = 0;
-    int sqliChance = 0;
+    int xssChance = 0;
 
 	show_question("Menu > XSS");
 
@@ -72,10 +77,10 @@ void xss() {
         return;
     }
 
-    show_question("Menu > XSS > Form(s) > Remplir valeurs");
+    show_question("Menu > XSS > Form(s) > Fill values");
 
     char chooseAttr[255];
-    printf("\n  Choose attr : ");
+    printf("\n  Choose name : ");
     scanf("%s", chooseAttr);
 
     while(input != NULL) {
@@ -106,10 +111,10 @@ void xss() {
 
     if(global.url != NULL) {
         send_curl(global.url, postfields);
-        saveData (global.url, postfields);
+        history_write ("XSS", global.url, postfields);
     } else {
         send_curl(url, postfields);
-        saveData(url, postfields);
+        history_write("XSS", url, postfields);
     }
 
     list_go_start_form_item(&forms); // Revenir au début de la liste au cas ou le formulaire choisi n'est pas le premier
@@ -120,15 +125,15 @@ void xss() {
     search_lines_in_file("files/response.txt", "TOKENHACKEDXSS", &error);
 
     if(error != NULL) {
-        sqliChance += 5;
+        xssChance += 5;
         list_clean_char_item(error);
     }
 
-    show_question("Menu > XSS > Resultats");
+    show_question("Menu > XSS > Results");
 
     printf("\n  +---------------------------------------------------------------+");
     printf("\n  | %-61s |", "");
-    printf("\n  | %-61s |", sqliChance ? "SQLI TROUVEE" : "SQLI NON DETECTEE");
+    printf("\n  | %-61s |", xssChance ? "XSS DETECTED" : "XSS NOT DETECTEE");
     printf("\n  | %-61s |", "");
     printf("\n  +---------------------------------------------------------------+\n");
 

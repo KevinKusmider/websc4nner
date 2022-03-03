@@ -1,12 +1,14 @@
 #ifndef __GLOBAL_H__
 #define __GLOBAL_H__
 
+    /*** LIBRARIES ***/
     // Imported libraries
     #include <mysql/mysql.h>
 
     // Own libraries
     #include <liste.h>
 
+    /*** STRUCTURES ***/
     typedef struct GLOBAL
     {
 
@@ -18,6 +20,7 @@
 
     } GLOBAL;
 
+    /*** PROTOTYPES ***/
     int init_global();
 
     // FICHER CONFIG
@@ -27,5 +30,8 @@
 
     // MYSQL
     int init_mysql();
+
+    // CLEANING
+    int global_clean();
 
 #endif

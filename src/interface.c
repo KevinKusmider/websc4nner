@@ -1,12 +1,19 @@
-// Interface functions
+/*** LIBRARIES ***/
+// GCC Standars
 #include <stdio.h>
 #include <stdlib.h>
+
+// Imported Libraries
 #include <gtk/gtk.h>
+
+// Own Libraries
 #include <database.h>
 #include <interface.h>
 #include <global.h>
 
+
 extern GLOBAL global;
+
 
 GtkWidget *window;
 //GtkLabel *mylabel;
@@ -17,6 +24,12 @@ GtkWidget * view;
 GtkTextMark * mark;
 GtkTextIter iter;
 
+/**
+ * @brief 
+ * 
+ * @param argc 
+ * @param argv 
+ */
 void interface_init(int *argc,char ***argv) {
 	
 	gtk_init(argc, argv);
@@ -38,6 +51,11 @@ void interface_init(int *argc,char ***argv) {
 	gtk_main();
 }
 
+
+/**
+ * @brief 
+ * 
+ */
 void button_clicked(){
 	printf("Button clicked \n");
 	DISPLAY_STRUCT displays;
@@ -75,14 +93,9 @@ void button_clicked(){
 
 		//On fait une boucle pour avoir la valeur de chaque champs
 		for(i = 0; i < num_champs; i++) {
-			//On ecrit toutes les valeurs
-			//sprintf(display,"%.*s\n", (int) lengths[i], row[i] ? row[i] : "NULL");
-			//printf("[%.*s] ", (int) lengths[i], row[i] ? row[i] : "NULL");
 			sprintf(display,"%.*s", (int) lengths[i], row[i] ? row[i] : "NULL");
 			strcat(temp, display);
-			strcat(temp, "\n");
-			
-						
+			strcat(temp, "\n");		
 		}
 
 		strcat(res, temp);
@@ -118,6 +131,11 @@ void button_clicked(){
 	free(displays.data);
 }
 
+
+/**
+ * @brief 
+ * 
+ */
 void button_clicked2(){
 	printf("Button clicked \n");
 	DISPLAY_STRUCT displays;
@@ -130,7 +148,7 @@ void button_clicked2(){
 	}
 
 	if(global.result != NULL)
-			mysql_free_result(global.result);
+		mysql_free_result(global.result);
 
 	global.result = mysql_store_result(global.mysql); // Store results
 	
@@ -160,9 +178,7 @@ void button_clicked2(){
 			//printf("[%.*s] ", (int) lengths[i], row[i] ? row[i] : "NULL");
 			sprintf(display,"%.*s", (int) lengths[i], row[i] ? row[i] : "NULL");
 			strcat(temp, display);
-			strcat(temp, "\n");
-			
-						
+			strcat(temp, "\n");		
 		}
 
 		strcat(res, temp);

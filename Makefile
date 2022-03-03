@@ -27,10 +27,14 @@ newprog:
 	konsole --hold -e "./main"
 
 
-deldb:
-	$(shell mysql -uroot -psecure11 -e "DROP USER '$(DB_USER)'@'localhost';")
-
-db:
+DB:
 	$(shell mysql -uroot -psecure11 -e "CREATE DATABASE $(DB_NAME);")
 	$(shell mysql -uroot -psecure11 -e "CREATE USER '$(DB_USER)'@'localhost' IDENTIFIED BY '$(DB_PASSWORD)'; GRANT ALL PRIVILEGES ON $(DB_NAME).* TO '$(DB_USER)'@'localhost';")
 	$(shell mysql -u$(DB_USER) -p$(DB_PASSWORD) webscanner < database/reset/tables.sql)
+
+deleteDB:
+	$(shell mysql -uroot -psecure11 -e "DROP DATABASE $(DB_NAME);")
+	$(shell mysql -uroot -psecure11 -e "DROP USER '$(DB_USER)'@'localhost';")
+
+dumpDB:
+	$(shell mysqldump -uroot -psecure11 files/dumps/dump.sql < webscanner");

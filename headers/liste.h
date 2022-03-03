@@ -1,6 +1,7 @@
 #ifndef __LISTE_H__
 #define __LISTE_H__
 
+    /*** STRUCTURES ***/
     typedef struct CHAR_ITEM
     {
 
@@ -31,17 +32,20 @@
 
     } FORM_ITEM;
     
+
+    /*** PROTOTYPES ***/
     // CHAR ITEMS
     int list_add_char_item(CHAR_ITEM **start, char * key, char * value);
-    void list_go_start_char_item(CHAR_ITEM **start);
-    int list_clean_char_item(CHAR_ITEM *start);
     void list_show_char_item(CHAR_ITEM *start);
+    int list_clean_char_item(CHAR_ITEM *start);
 
     // DOM ELEMENTS
+    // FORM
     int list_count_form_item(FORM_ITEM * forms);
     void list_go_start_form_item(FORM_ITEM **start);
-    int list_clean_input_item(INPUT_ITEM *start);
     int list_clean_form_item(FORM_ITEM *start);
+    // INPUT
+    int list_clean_input_item(INPUT_ITEM *start);
 
     // DISPLAY FORM
     void list_show_forms(FORM_ITEM * start);

@@ -1,3 +1,4 @@
+/*** LIBRARIES ***/
 // GCC Standards
 #include <stdio.h>
 #include <stdlib.h>
@@ -87,7 +88,7 @@ char * config(char * key) {
 }
 
 /**
- * @brief Vérifie si la valeur d'une certaine clé est la même que celle passée en paramètre
+ * @brief Vérifie dans le fichier config si la valeur d'une certaine clé est la même que celle passée en paramètre
  * 
  * @param key 
  * @param value 
@@ -111,6 +112,11 @@ int config_check(char * key, char * value) {
  * MYSQL LIB
 *************************/
 
+/**
+ * @brief Initliser le pointeur MYSQL global et la connexion a la bdd
+ * 
+ * @return int 
+ */
 int init_mysql() {
     global.mysql = mysql_init(NULL);
     if(global.mysql == NULL) {
@@ -140,9 +146,30 @@ int init_mysql() {
 
 
 
+/************************
+ * CLEANING
+*************************/
 
+/**
+ * @brief Libérer tous les éléments de la structure global
+ * 
+ * @return int 
+ */
+int global_clean() {
+    if(global.configs != NULL)
+        list_clean_char_item(global.configs);
 
+    if(global.url != NULL)
+        free(global.url);
 
+    if(global.mysql != NULL)
+        mysql_close(global.mysql);
 
-// FUNC A FAIRE : CONFIG_REFRESH
-// FUNC A FAIRE : FREE GLOBAL
+    if(global.result != NULL)
+        mysql_free_result(global.result);
+
+    if(global.stmt)
+        mysql_stmt_close(global.stmt);
+
+    return 1;
+}

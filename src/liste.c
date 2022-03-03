@@ -1,10 +1,14 @@
+/*** LIBRARIES ***/
+// GCC Standars
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+// Imported Libraries
 #include <curl/curl.h>
 #include <mysql/mysql.h>
 
+// Own Libraries
 #include <liste.h>
 #include <global.h>
 
@@ -54,23 +58,6 @@ int list_add_char_item(CHAR_ITEM **start, char * key, char * value) {
 
     return 1;
 }
-
-void list_go_start_char_item(CHAR_ITEM **start) {
-    CHAR_ITEM *item = *start;
-
-    if(item = NULL) {
-        if(config_check("debug", "true"))
-            fprintf(stderr, "\nLa liste est NULL\n");
-        return ;
-    }
-
-    while(item->prev != NULL) {
-        item = item->prev;
-    }
-
-    *start = item;
-}
-
 
 int list_clean_char_item(CHAR_ITEM *start) {
     CHAR_ITEM *nextItem = NULL;

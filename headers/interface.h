@@ -1,7 +1,11 @@
 #ifndef __INTERFACE_H__
 #define __INTERFACE_H__
+
+    /*** LIBRARIES ***/
+    // Imported Libraries
     #include <gtk/gtk.h>
 
+    /*** STRUCTURES ***/
     typedef struct DISPLAY_STRUCT
     {
 
@@ -11,6 +15,7 @@
 
     } DISPLAY_STRUCT;
 
+    /*** PROTOTYPES ***/
     void print_hello (GtkWidget *widget, gpointer data);
 
     void activate (GtkApplication *app, gpointer user_data);
