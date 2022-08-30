@@ -1,5 +1,0 @@
-debug true
-db_host localhost
-db_user webscanner_user
-db_password Secure11
-db_name webscanner
